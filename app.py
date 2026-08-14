@@ -17,7 +17,7 @@ def check_password():
     st.sidebar.subheader("🔒 Seguridad")
     password = st.sidebar.text_input("Contraseña de acceso", type="password")
     if st.sidebar.button("Ingresar"):
-        if password == "1234":
+        if password == "metro2026":
             st.session_state["password_correct"] = True
             st.rerun()
         else:
