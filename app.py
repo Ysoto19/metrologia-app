@@ -384,6 +384,7 @@ with tab4:
             temperatura = st.number_input("Temperatura (°C)", value=20.00, format="%.2f")
             humedad = st.number_input("Humedad Relativa (%)", value=65.00, format="%.2f")
             higrometro = st.text_input("Higrómetro Patrón", value="CC-YH-102-2237")
+            repetibilidad = st.number_input("Repetibilidad", value=0.0000, format="%.4f")
 
         st.markdown("---")
         eq_info = df_e[df_e['serial'] == serial].iloc[0]
@@ -545,7 +546,7 @@ with tab5:
                 canvas.drawRightString(576, 25, f"Página {doc.page}")
                 canvas.restoreState()
 
-            def generar_pdf(row, s_eq, df_equipos):
+            def generar_pdf(row, s_eq, df_equipos, repetibilidad):
                 buffer = io.BytesIO()
                 doc = SimpleDocTemplate(buffer, pagesize=letter, rightMargin=36, leftMargin=36, topMargin=50, bottomMargin=40)
                 styles = getSampleStyleSheet()
@@ -569,7 +570,7 @@ with tab5:
                     err = float(row.get('error', 0))
                     emp_v = float(row.get('emp', 0.001))
                     u_exp = float(row.get('incertidumbre_expandida', 0))
-                    rep = float(row.get('repetibilidad', 0))
+                    rep = float('repetibilidad')
                 except ValueError:
                     val_nom, val_real, err, emp_v, u_exp, rep = 0.0, 0.0, 0.0, 0.001, 0.0, 0.0
 
@@ -634,7 +635,7 @@ with tab5:
             if not df_eq.empty:
                 st.markdown("<br>", unsafe_allow_html=True)
                 ultimo = df_eq.iloc[-1]
-                pdf_bytes = generar_pdf(ultimo, serial_filtro, df_e)
-                st.download_button("📥 Descargar Certificado Oficial en PDF", data=pdf_bytes, file_name=f"Certificado_SCE_{serial_filtro}.pdf", mime="application/pdf")
+                pdf_bytes = generar_pdf(ultimo, serial_filtro, df_e, repetibilidad)
+                st.download_button("📥 Descargar Certificado Oficial en PDF", data=pdf_bytes, file_name=f"Certificado_SCE_{serial_filtro}.pdf", mime="application/pdf,")
     else:
         st.info("No hay registros disponibles en el historial.")
